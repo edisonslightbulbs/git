@@ -1,0 +1,233 @@
+#!/bin/zsh
+
+# .ggit:
+#   aliases for custom git work-flows
+#
+# author: Everett
+# created: 2020-10-26 11:25
+# Github: https://github.com/antiqueeverett/
+
+# HELPER FUNCTIONS: ###########################################################
+
+# root():
+#   Changes present working directory to a git root directory.
+#
+function root() {
+    local ROOT="$(command git rev-parse --show-toplevel 2> /dev/null  || echo -n .)"
+    if [ $# -eq 0 ]; then
+        cd "$ROOT"
+    else
+        (cd "$ROOT" && eval "$@")
+    fi
+}
+
+
+# attach():
+#   Attaches a detached head to the main branch.
+#
+# TODO:
+#   In principle, this should be dynamic, i.e., one should be
+#   able to pass the branch to force the detached head onto.
+#
+# USE CASE:
+#   i. After submodule update
+#
+function attach() {
+    # check for any uncommitted changes
+    if [ -n "$(git status --porcelain)" ]; then
+        echo "Please commit changes before attaching head to main branch";
+    else
+        # create temp branch
+        if [ `git branch --list temp` ]; then
+            git branch -d temp
+        else
+            git checkout -b temp
+        fi
+        git -f master temp || git -f main temp
+        git checkout master
+        git branch -d temp
+    fi
+}
+
+
+# pull():
+#    Checks if root repo has submodules and selects an
+#      appropriate pull strategy.
+#
+function pull() {
+    local CURR_DIR="$PWD"
+
+    # go to repo root directory
+    root
+
+    # iff repo has submodules, use submodule pull strategy
+    if [[ $(git submodule foreach 'git status') ]]; then
+        git submodule update --remote
+        command git pull --recurse-submodules -j8
+    else
+        # ... else use default pull strategy
+        command git pull
+    fi
+    # keep working directory
+    cd "$CURR_DIR" || return
+}
+
+# state():
+#    Recursively checks the state of parent-child repos
+#
+function state(){
+    if [ -f .git ] || [ -d .git ]; then
+        # iff repo is dirty, let me know
+        if [[ $(git diff --stat) != '' ]]; then
+
+            # get repo name
+            printf '%s\n' "${PWD##*/}" || basename "$(git rev-parse --show-toplevel)"
+
+            # check state
+            git diff --quiet || echo " -- dirty \n"
+
+            return
+        else
+            # ... else let me know its clean
+            printf '%s\n' "${PWD##*/}"
+            [[ -n $(git status -s) ]] || echo " -- clean \n"
+        fi
+    fi
+}
+
+# push():
+#    Checks if root repo has submodules and selects an
+#      appropriate push strategy.
+#
+function push() {
+    local CURR_DIR="$PWD"
+
+    # go to repo root directory
+    root
+
+    # iff repo has submodules, use safer submodule pull-strategy
+    if [[ $(git submodule foreach 'git status') ]]; then
+
+        # find and check the state of all submodules (depth = 3)
+        for DIR in $(find "$1" -maxdepth 3 -mindepth 1 -type d); do
+            cd "$DIR" || return
+            state
+            command git push
+        done
+    else
+        # ... else use default pull-strategy
+        command git push
+    fi
+    # keep working directory
+    cd "$CURR_DIR" || return
+}
+
+# commit():
+#    commit messages without wrapping quotes
+#
+function commit() {
+    eval "git commit -m \"$*\""
+}
+
+# global():
+#   Global state of all repositories
+#
+function global() {
+    local CURR_DIR="$PWD"
+
+    # find and check the state of all submodules (depth = 3)
+    for DIR in $(find "$HOME/Repositories" -maxdepth 3 -mindepth 1 -type d); do
+        cd "$DIR" || return
+        state
+    done
+    cd "$CURR_DIRR" || return
+}
+
+# sl():
+#   Lists submodules
+#
+function sl() {
+    git config --file .gitmodules --get-regexp path | awk '{ print $2 }'
+}
+
+# sr():
+#   Removes selected submodule
+#
+function sr() {
+    git submodule deinit -f -- "$1"
+    rm -rf .git/modules/"$1"
+    git rm -f "$1"
+}
+
+# diff():
+#   Shows most recent diff
+#
+function diff() {
+    if git diff-index --quiet HEAD --; then # if after commit
+        git diff HEAD^ HEAD
+    else
+        if git diff --cached --exit-code; then # if after state
+            git diff
+        else
+            git diff --cached # if after change
+        fi
+    fi
+}
+
+# GIT ALIASES: ----------------------------------------------------------------
+#
+# git():
+#   This function makes it possible to git alias the above functions,
+#   git <alias>, e.g., git root, git attach, git pull, git global etc.
+#   Aliases in this context refer to the above defined functions
+#
+# function git () {
+#     if [ "$1" = "root" ]; then
+#         root
+#     elif [ "$1" = "attach" ]; then
+#         attach
+#     elif [ "$1" = "pull" ]; then
+#         pull
+#     elif [ "$1" = "global" ]; then
+#         global
+#     elif [ "$1" = "sl" ]; then
+#         sl
+#     elif [ "$1" = "sr" ]; then
+#         shift
+#         sr "$1"
+#     elif [ "$1" = "diff" ]; then
+#         diff
+#     else
+#         command git "$@"
+#     fi
+# }
+
+# -- checkout
+git config --global alias.co 'checkout'
+
+# -- status and logs
+git config --global alias.stat 'status'
+git config --global alias.lg 'git log'
+git config --global alias.rlg 'git reflog'
+git config --global alias.plg 'log --pretty="format:%h %G? %aN  %s"'
+
+# -- submodule operations
+git config --global alias.sa 'submodule add'
+git config --global alias.sc 'clone --recursive -j8'
+
+# -- rebase operations
+git config --global alias.ri 'rebase -i'
+
+# -- reset
+git config --global alias.rh 'reset --hard'
+git config --global alias.rs 'reset --soft'
+
+# -- size and tracking
+git config --global alias.size 'count-objects -vH'
+git config --global alias.track 'ls-tree -r master --name-only'
+
+# -- patch adding
+git config --global alias.padd 'git add --patch "."'
+
+# GIT ALIASES: ----------------------------------------------------------------
+
