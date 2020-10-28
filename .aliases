@@ -7,7 +7,7 @@
 # created: 2020-10-26 11:25
 # Github: https://github.com/antiqueeverett/
 
-# HELPER FUNCTIONS: ###########################################################
+# HELPER FUNCTIONS:
 
 # root():
 #   Changes present working directory to a git root directory.
@@ -39,13 +39,13 @@ function attach() {
     else
         # create temp branch
         if [ `git branch --list temp` ]; then
-            git branch -d temp
+            command git branch -d temp
         else
-            git checkout -b temp
+            command git checkout -b temp
         fi
-        git -f master temp || git -f main temp
-        git checkout master
-        git branch -d temp
+        command git -f master temp || git -f main temp
+        command git checkout master
+        command git branch -d temp
     fi
 }
 
@@ -62,7 +62,7 @@ function pull() {
 
     # iff repo has submodules, use submodule pull strategy
     if [[ $(git submodule foreach 'git status') ]]; then
-        git submodule update --remote
+        command git submodule update --remote
         command git pull --recurse-submodules -j8
     else
         # ... else use default pull strategy
@@ -84,7 +84,7 @@ function state(){
             printf '%s\n' "${PWD##*/}" || basename "$(git rev-parse --show-toplevel)"
 
             # check state
-            git diff --quiet || echo " -- dirty \n"
+            command git diff --quiet || echo " -- dirty \n"
 
             return
         else
@@ -122,12 +122,6 @@ function push() {
     cd "$CURR_DIR" || return
 }
 
-# commit():
-#    commit messages without wrapping quotes
-#
-function commit() {
-    eval "git commit -m \"$*\""
-}
 
 # global():
 #   Global state of all repositories
@@ -147,16 +141,16 @@ function global() {
 #   Lists submodules
 #
 function sl() {
-    git config --file .gitmodules --get-regexp path | awk '{ print $2 }'
+    command git config --file .gitmodules --get-regexp path | awk '{ print $2 }'
 }
 
 # sr():
 #   Removes selected submodule
 #
 function sr() {
-    git submodule deinit -f -- "$1"
+    command git submodule deinit -f -- "$1"
     rm -rf .git/modules/"$1"
-    git rm -f "$1"
+    command git rm -f "$1"
 }
 
 # diff():
@@ -164,14 +158,31 @@ function sr() {
 #
 function diff() {
     if git diff-index --quiet HEAD --; then # if after commit
-        git diff HEAD^ HEAD
+        command git diff HEAD^ HEAD
     else
         if git diff --cached --exit-code; then # if after state
-            git diff
+            command git diff
         else
-            git diff --cached # if after change
+            command git diff --cached # if after change
         fi
     fi
+}
+
+# tested:
+
+
+# commit():
+#    Allows for commit messages without wrapping quotes.
+function commit() {
+    shift
+    command git commit -m "$*"
+}
+
+# commit():
+#    Default clone to recursive clone strategy.
+function clone(){
+    shift
+    command git clone --recursive -j8 $1
 }
 
 # GIT ALIASES: ----------------------------------------------------------------
@@ -181,26 +192,32 @@ function diff() {
 #   git <alias>, e.g., git root, git attach, git pull, git global etc.
 #   Aliases in this context refer to the above defined functions
 #
-# function git () {
-#     if [ "$1" = "root" ]; then
-#         root
-#     elif [ "$1" = "attach" ]; then
-#         attach
-#     elif [ "$1" = "pull" ]; then
-#         pull
-#     elif [ "$1" = "global" ]; then
-#         global
-#     elif [ "$1" = "sl" ]; then
-#         sl
-#     elif [ "$1" = "sr" ]; then
-#         shift
-#         sr "$1"
-#     elif [ "$1" = "diff" ]; then
-#         diff
-#     else
-#         command git "$@"
-#     fi
-# }
+function git () {
+    if [ "$1" = "root" ]; then
+        root
+    elif [ "$1" = "pull" ]; then
+        pull
+    elif [ "$1" = "clone" ]; then
+        clone "$1"
+    elif [ "$1" = "push" ]; then
+        push
+    elif [ "$1" = "global" ]; then
+        global
+    elif [ "$1" = "commit" ]; then
+        commit "$@"
+    elif [ "$1" = "attach" ]; then
+        attach
+    elif [ "$1" = "sl" ]; then
+        sl
+        #    elif [ "$1" = "sr" ]; then
+        #        shift
+        #        sr "$1"
+        #    elif [ "$1" = "diff" ]; then
+        #        diff
+    else
+        command git "$@"
+    fi
+}
 
 # -- checkout
 git config --global alias.co 'checkout'
