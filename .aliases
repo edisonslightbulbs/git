@@ -118,8 +118,6 @@ function subrm() {
 }
 
 
-# GIT FUNCTIONS : -------------------------------------------------------------
-
 # pull():
 #    Checks if root repo has submodules and selects an
 #      appropriate pull strategy.
@@ -140,6 +138,8 @@ function pull() {
     # keep working directory
     cd "$CURR_DIR" || return
 }
+
+# GIT FUNCTIONS (corner cases tested) : ---------------------------------------
 
 # root():
 #   Changes present working directory to a git root directory.
@@ -165,9 +165,9 @@ function diff() {
     fi
 }
 
-# commit():
+# comm():
 #    Allows for commit messages without wrapping quotes.
-function commit() {
+function comm() {
     shift
     command git commit -m "$*"
 }
@@ -189,16 +189,16 @@ function clone(){
 function git () {
     if [ "$1" = "root" ]; then
         root
-    elif [ "$1" = "pull" ]; then
-        pull
-    elif [ "$1" = "clone" ]; then
-        clone "$@"
-    elif [ "$1" = "push" ]; then
-        push
+    # elif [ "$1" = "pull" ]; then
+    #     pull
+    # elif [ "$1" = "clone" ]; then
+    #     clone "$@"
+    # elif [ "$1" = "push" ]; then
+    #     push
     elif [ "$1" = "global" ]; then
         global
-    elif [ "$1" = "commit" ]; then
-        commit "$@"
+    elif [ "$1" = "comm" ]; then
+        comm "$@"
     elif [ "$1" = "attach" ]; then
         attach
     elif [ "$1" = "sl" ]; then
@@ -227,6 +227,9 @@ git config --global alias.lgp 'log --pretty="format:%h %G? %aN  %s"'
 
 # -- submodule operations
 git config --global alias.subadd 'submodule add'
+
+# -- branch operations
+git config --global alias.b 'branch'
 
 # -- rebase operations
 git config --global alias.rbi 'rebase -i'
