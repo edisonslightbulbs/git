@@ -1,12 +1,62 @@
 #!/bin/zsh
 
 # .aliases:
-#   aliases for custom git work-flows (optimized)
-#
+#   Aliases for custom git work-flows (optimized).
 # author: Everett
 # created: 2020-10-26 11:25
 # Github: https://github.com/antiqueeverett/
 
+# -- checkout
+command git config --global alias.co 'checkout'
+command git config --global alias.cobr 'checkout -b'
+
+# -- status and logs
+command git config --global alias.ss 'status'
+command git config --global alias.lg 'git log'
+command git config --global alias.lgr 'git reflog'
+command git config --global alias.lgp 'log --pretty="format:%h %G? %aN  %s"'
+
+# -- submodule operations
+command git config --global alias.subadd 'submodule add'
+
+# -- branch operations
+command git config --global alias.br 'branch'
+command git config --global alias.brrm 'branch -d'
+command git config --global alias.brff 'branch -f'
+
+# -- rebase operations
+command git config --global alias.rbi 'rebase -i'
+
+# -- reset
+command git config --global alias.rst 'restore'
+command git config --global alias.rst-h 'reset --hard'
+command git config --global alias.rst-s 'reset --soft'
+
+# -- size and tracking
+command git config --global alias.size 'count-objects -vH'
+command git config --global alias.track 'ls-tree -r master --name-only'
+
+# -- patch
+command git config --global alias.patch 'git add --patch'
+
+# root():
+#   Navigates to a git root directory.
+function root() {
+    local ROOT
+    ROOT="$(command git rev-parse --show-toplevel 2> /dev/null  || echo -n .)"
+
+    if [ $# -eq 0 ]; then
+        cd "$ROOT" || return
+    fi
+}
+
+function git () {
+    if [ "$1" = "root" ]; then
+        root
+        else
+        command git "$@"
+    fi
+    }
 
 # attach():
 #   Attaches a detached head to the main branch.
@@ -38,7 +88,6 @@
 #
 # # state():
 # #    Recursively checks the state of parent-child repos
-# #
 # function state(){
 #     if [ -f .git ] || [ -d .git ]; then
 #         # iff repo is dirty, let me know
@@ -62,7 +111,6 @@
 # # push():
 # #    Checks if root repo has submodules and selects an
 # #      appropriate push strategy.
-# #
 # function push() {
 #     local CURR_DIR="$PWD"
 #
@@ -141,20 +189,11 @@
 #
 # # GIT FUNCTIONS (corner cases tested) : ---------------------------------------
 #
-# # root():
-# #   Changes present working directory to a git root directory.
-# #
-# function root() {
-#     local ROOT="$(git rev-parse --show-toplevel 2> /dev/null  || echo -n .)"
-#     if [ $# -eq 0 ]; then
-#         cd "$ROOT"
-#     fi
-# }
 #
 # # diff():
 # #   Shows most recent diff.
 # function diff() {
-#     if command git diff-index --quiet HEAD --; then # if after commit
+#     if  git diff-index --quiet HEAD --; then # if after commit
 #         command git diff HEAD^ HEAD
 #     else
 #         if command git diff --cached --exit-code; then # if after state
@@ -212,36 +251,3 @@
 #         command git "$@"
 #     fi
 # }
-
-
-# GIT ALIASES: ----------------------------------------------------------------
-#
-# -- checkout
-git config --global alias.co 'checkout'
-
-# -- status and logs
-git config --global alias.stat 'status'
-git config --global alias.lg 'git log'
-git config --global alias.lgr 'git reflog'
-git config --global alias.lgp 'log --pretty="format:%h %G? %aN  %s"'
-
-# -- submodule operations
-git config --global alias.subadd 'submodule add'
-
-# -- branch operations
-git config --global alias.b 'branch'
-
-# -- rebase operations
-git config --global alias.rbi 'rebase -i'
-
-# -- reset
-git config --global alias.rst 'restore'
-git config --global alias.rstH 'reset --hard'
-git config --global alias.rstS 'reset --soft'
-
-# -- size and tracking
-git config --global alias.size 'count-objects -vH'
-git config --global alias.track 'ls-tree -r master --name-only'
-
-# -- patch
-git config --global alias.patch 'git add --patch'
