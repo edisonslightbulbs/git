@@ -39,6 +39,7 @@ command git config --global alias.track 'ls-tree -r master --name-only'
 # -- patch
 command git config --global alias.patch 'git add --patch'
 
+
 # root():
 #   Navigates to a git root directory.
 function root() {
@@ -50,13 +51,71 @@ function root() {
     fi
 }
 
+
+# rm_submodule(): [ tested ]
+#   Removes a submodule.
+function rm_submodule() {
+    local ROOT
+    ROOT="$PWD"
+
+    #  find the absolute path of a submodule iff it exists:
+    #    to allow for non-alphanumeric filenames change from using [ -print0 ] and [ -0 ]
+    #    while read [ -r ] prevents mangling of back slashes
+    find . -type d -name "$1" -print0 | xargs -0 realpath | while read -r MODULEPATH; do
+    cd "$MODULEPATH" || return
+
+    # use the .git *file to ID the submodule
+    if test -f '.git'; then
+        # todo: optimize find strategy by grepping the .git file
+        echo "Found submodule: $1"
+        echo "Removing submodule: $1"
+
+        # [ # ] strip off leading absolute path
+        MODULE=${MODULEPATH#"$ROOT"/}
+        echo "$MODULE"
+
+        # change back to root .git directory
+        cd "$ROOT" || return
+
+        # correctly remove git submodule
+        # -- 1. deregister submodule path
+        if ! git submodule deinit -f -- "$MODULE"; then
+            echo "Something went wrong: unable to unregister submodule path"
+        else
+            # -- 2. remove submodule
+            if ! git rm -f "$MODULE"; then
+                echo "Something went wrong: unable to remove submodule from git repository"
+            else
+                # -- 3. remove submodule from .git/modules
+                if ! rm -rf .git/modules/"$MODULE"; then
+                    echo "Something went wrong: unable delete submodule from git module path"
+                else
+                    echo "Submodule removed from project repository successfully"
+                    return
+                fi
+            fi
+
+        fi
+    fi
+    done
+}
+
+
+# TODO:  create seperate git functions file <03-11-20, everett> #
 function git () {
     if [ "$1" = "root" ]; then
         root
-        else
+    elif  [ "$1" = "sr" ]; then
+        shift
+        rm_submodule "$1"
+    else
         command git "$@"
     fi
-    }
+}
+
+
+
+#
 
 # attach():
 #   Attaches a detached head to the main branch.
