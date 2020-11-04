@@ -7,6 +7,32 @@
 # Github: https://github.com/antiqueeverett/
 
 
+# clone: [ not tested ]
+#    For a repo with submodules, clone recursively
+function clone(){
+    shift
+    command git clone --recursive "$*" -j8
+}
+
+
+# diff: [ tested ]
+#   Shows most recent diff:
+#   case   i. diff un-staged
+#   case  ii. diff staged
+#   case iii. diff commit
+function diff() {
+    if ! git diff-files --quiet --ignore-submodules --; then
+        command git diff
+        return
+    elif [[ -n $(git status --porcelain) ]]; then
+        command git diff --cached
+        return
+    else
+        command git diff HEAD^ HEAD
+    fi
+}
+
+
 # pull: [ tested ]
 #   For a repo with submodules, auto-recursive pull
 function pull() {
@@ -156,80 +182,4 @@ done
 # #
 # function sl() {
 #     command git config --file .gitmodules --get-regexp path | awk '{ print $2 }'
-# }
-#
-# # subrm():
-# #   Removes selected submodule
-# #
-# function subrm() {
-#     command git submodule deinit -f -- "$1"
-#     rm -rf .git/modules/"$1"
-#     command git rm -f "$1"
-# }
-#
-#
-#
-# # GIT FUNCTIONS (corner cases tested) : ---------------------------------------
-#
-#
-# # diff():
-# #   Shows most recent diff.
-# function diff() {
-#     if  git diff-index --quiet HEAD --; then # if after commit
-#         command git diff HEAD^ HEAD
-#     else
-#         if command git diff --cached --exit-code; then # if after state
-#             command git diff
-#         else
-#             command git diff --cached # if after change
-#         fi
-#     fi
-# }
-#
-# # comm():
-# #    Allows for commit messages without wrapping quotes.
-# function comm() {
-#     shift
-#     command git commit -m "$*"
-# }
-#
-# # commit():
-# #    Default clone to recursive clone strategy.
-# function clone(){
-#     shift
-#     command git clone --recursive "$*" -j8
-# }
-#
-#
-# # git():
-# #   This function makes it possible to alias the functions given above, i.e.,
-# #                               git <alias>
-# #                            =  git <function>
-# #
-# #   E.g., git root # changes to root git directory.
-# function git () {
-#     if [ "$1" = "root" ]; then
-#         root
-#         # elif [ "$1" = "pull" ]; then
-#         #     pull
-#         # elif [ "$1" = "clone" ]; then
-#         #     clone "$@"
-#         # elif [ "$1" = "push" ]; then
-#         #     push
-#         #    elif [ "$1" = "subrm" ]; then
-#         #        shift
-#         #        subrm "$1"
-#         #elif [ "$1" = "diff" ]; then
-#         #    diff
-#         # elif [ "$1" = "global" ]; then
-#         #     global
-#         # elif [ "$1" = "comm" ]; then
-#         #     comm "$@"
-#         # elif [ "$1" = "attach" ]; then
-#         #     attach
-#         # elif [ "$1" = "sl" ]; then
-#         #     sl
-#         else
-#         command git "$@"
-#     fi
 # }

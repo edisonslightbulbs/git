@@ -47,11 +47,15 @@ source "$FUNCTIONS"
 function git () {
     if [ "$1" = "root" ]; then
         root
+    elif [ "$1" = "diff" ]; then
+        diff
     elif  [ "$1" = "sr" ]; then
         shift
         sr "$1"
     elif  [ "$1" = "pull" ]; then
         pull
+    elif [ "$1" = "clone" ]; then
+        clone "$@"
     else
         command git "$@"
     fi
