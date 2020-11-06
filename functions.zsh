@@ -7,7 +7,14 @@
 # Github: https://github.com/antiqueeverett/
 
 
-# clone: [ not tested ]
+# rbm: [ tested ]
+#    Rebase calling branch or current master or main.
+function rbm(){
+    git rebase master || git rebase main
+}
+
+
+# clone: [ tested ]
 #    For a repo with submodules, clone recursively
 function clone(){
     shift
@@ -66,7 +73,8 @@ function root() {
 
 # sr: [ tested ]
 #   Removes a submodule, correctly.
-function sr() {
+function subrm() {
+    shift
     local ROOT
     ROOT="$PWD"
 
@@ -159,22 +167,6 @@ done
 #             [[ -n $(git status -s) ]] || echo " -- clean \n"
 #         fi
 #     fi
-# }
-#
-#
-#
-# # global():
-# #   Global state of all repositories
-# #
-# function global() {
-#     local CURR_DIR="$PWD"
-#
-#     # find and check the state of all submodules (depth = 3)
-#     for DIR in $(find "$HOME/Repositories" -maxdepth 3 -mindepth 1 -type d); do
-#         cd "$DIR" || return
-#         state
-#     done
-#     cd "$CURR_DIRR" || return
 # }
 #
 # # sl():

@@ -21,8 +21,9 @@ git config --global alias.subadd 'submodule add'
 
 # -- branch operations
 git config --global alias.br 'branch'
-git config --global alias.brrm 'branch -d'
-git config --global alias.brff 'branch -f'
+git config --global alias.brm 'branch -m'
+git config --global alias.brd 'branch -d'
+git config --global alias.brf 'branch -f'
 
 # -- rebase operations
 git config --global alias.rbi 'rebase -i'
@@ -44,18 +45,28 @@ git config --global alias.patch 'git add --patch'
 FUNCTIONS="$HOME/dotfiles/git/functions.zsh"
 source "$FUNCTIONS"
 
+# git:
+#   Overrides the git command.
 function git () {
+    # -- basics
     if [ "$1" = "root" ]; then
         root
     elif [ "$1" = "diff" ]; then
         diff
-    elif  [ "$1" = "sr" ]; then
-        shift
-        sr "$1"
     elif  [ "$1" = "pull" ]; then
         pull
     elif [ "$1" = "clone" ]; then
         clone "$@"
+
+    # -- submodule operations
+    elif  [ "$1" = "subrm" ]; then
+        subrm "$1"
+
+    # -- submodule operations
+    elif  [ "$1" = "rbm" ]; then
+        rbm
+
+    # -- OTRW revert to normal git command
     else
         command git "$@"
     fi
