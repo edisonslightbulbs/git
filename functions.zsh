@@ -13,7 +13,7 @@ function attach() {
 	# check for unstage changes
 	if git diff-files --quiet --ignore-submodules --; then
 		# check for uncommitted changes
-		if [[ $(git status --porcelain) ]]; then
+		if git diff-index --quiet HEAD --; then # if after commit
 			# create a new temp branch
 			if git show-ref --verify --quiet refs/heads/temp; then
 				git branch -d temp
