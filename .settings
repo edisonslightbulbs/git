@@ -13,7 +13,7 @@ git config --global difftool.prompt false
 
 # -- merge
 git config --global mergetool.vimdiff3.path nvim
-git config --global merge.conflictstyle vimdiff3
+#git config --global merge.conflictstyle vimdiff3
 git config --global merge.tool vimdiff3
 git config --global mergetool.nvim.cmd $'nvim -d $LOCAL $REMOTE $MERGED -c \'$wincmd w\' -c \'wincmd J\''
 
