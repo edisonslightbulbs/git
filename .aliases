@@ -1,7 +1,7 @@
 #!/bin/zsh
 
 # .aliases:
-#   Aliases for custom git work-flows (optimized).
+#   Aliases for git.
 # author: Everett
 # created: 2020-10-26 11:25
 # Github: https://github.com/antiqueeverett/
@@ -12,8 +12,8 @@ git config --global alias.cobr 'checkout -b'
 
 # -- status and logs
 git config --global alias.ss 'status'
-git config --global alias.lg 'git log'
-git config --global alias.lgr 'git reflog'
+git config --global alias.lg 'log'
+git config --global alias.lgr 'reflog'
 git config --global alias.lgp 'log --pretty="format:%h %G? %aN  %s"'
 
 # -- submodule operations
@@ -30,15 +30,13 @@ git config --global alias.rbi 'rebase -i'
 
 # -- reset
 git config --global alias.rst 'restore'
-git config --global alias.rst-h 'reset --hard'
-git config --global alias.rst-s 'reset --soft'
 
 # -- size and tracking
 git config --global alias.size 'count-objects -vH'
 git config --global alias.track 'ls-tree -r master --name-only'
 
 # -- patch
-git config --global alias.patch 'git add --patch'
+git config --global alias.patch 'add --patch'
 
 
 # -- alias git funntions
@@ -73,3 +71,4 @@ function git () {
         command git "$@"
     fi
 }
+

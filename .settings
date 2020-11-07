@@ -1,0 +1,27 @@
+#!/bin/zsh
+
+# .settings:
+#   Settings for git.
+# author: Everett
+# created: 2020-11-07 13:04
+# Github: https://github.com/antiqueeverett/
+
+# -- diff
+git config --global difftool.vimdiff3.path nvim
+git config --global diff.tool vimdiff3
+git config --global difftool.prompt false
+
+# -- merge
+git config --global mergetool.vimdiff3.path nvim
+git config --global merge.conflictstyle vimdiff3
+git config --global merge.tool vimdiff3
+git config --global mergetool.nvim.cmd $'nvim -d $LOCAL $REMOTE $MERGED -c \'$wincmd w\' -c \'wincmd J\''
+
+# -- tag
+git config --global tag.forceSignAnnotated true
+
+# -- commit
+git config --global commit.gpgsign true
+
+# -- pull
+git config --global pull.rebase false
