@@ -26,6 +26,7 @@ git config --global alias.brd 'branch -d'
 git config --global alias.brf 'branch -f'
 
 # -- rebase operations
+git config --global alias.rb 'rebase'
 git config --global alias.rbi 'rebase -i'
 
 # -- reset
@@ -57,12 +58,11 @@ function git () {
         clone "$@"
     # -- submodule operations
     elif  [ "$1" = "subrm" ]; then
-        subrm "$1"
+        subrm "$@"
     elif  [ "$1" = "sublst" ]; then
         sublst
     # -- rebase operations
-    elif  [ "$1" = "rbm" ]; then
-        rbm
+
     # -- corner cases
     elif  [ "$1" = "attach" ]; then
         attach "$@"
