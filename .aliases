@@ -11,7 +11,7 @@ git config --global alias.co 'checkout'
 git config --global alias.cobr 'checkout -b'
 
 # -- status and logs
-git config --global alias.ss 'status'
+git config --global alias.s 'status'
 git config --global alias.lg 'log'
 git config --global alias.lgr 'reflog'
 git config --global alias.lgp 'log --pretty="format:%h %G? %aN  %s"'
@@ -57,7 +57,7 @@ function git () {
         clone "$@"
     # -- submodule operations
     elif  [ "$1" = "subrm" ]; then
-        subrm "$@"
+        subrm "$1"
     elif  [ "$1" = "sublst" ]; then
         sublst
     # -- rebase operations
