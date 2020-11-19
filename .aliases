@@ -56,16 +56,18 @@ function git () {
         pull
     elif [ "$1" = "clone" ]; then
         clone "$@"
+
     # -- submodule operations
     elif  [ "$1" = "subrm" ]; then
         subrm "$@"
     elif  [ "$1" = "sublst" ]; then
         sublst
-    # -- rebase operations
 
-    # -- corner cases
+    # -- attaching detached head
+    #    with unintended commits
     elif  [ "$1" = "attach" ]; then
         attach "$@"
+
     # -- OTRW revert to normal git command
     else
         command git "$@"
