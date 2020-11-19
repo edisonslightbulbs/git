@@ -12,7 +12,7 @@
 #   i.e., using git mv iff mv is used inside
 #   a git repository.
 function mv () {
-    if git rev-parse --git-dir > /dev/null 2>&1; then
+    if [ $(git rev-parse --git-dir) ] && [ $(git ls-files "$@") ]; then
         git mv "$@"
     else
         command mv "$@"
@@ -110,8 +110,8 @@ function root() {
 function subrm() {
     shift
     echo "$1"
-     local ROOT
-     ROOT="$PWD"
+    local ROOT
+    ROOT="$PWD"
 
      #  find the absolute path of a submodule iff it exists:
      #   to allow for non-alphanumeric filenames change from using [ -print0 ] and [ -0 ]
@@ -150,8 +150,8 @@ function subrm() {
                  fi
              fi
          fi
-         done
-}
+     done
+ }
 
 # # state():
 # #    Recursively checks the state of parent-child repos
