@@ -21,7 +21,6 @@ git config --global alias.subadd 'submodule add'
 
 # -- branch operations
 git config --global alias.br 'branch'
-git config --global alias.brm 'branch -m'
 git config --global alias.brd 'branch -d'
 git config --global alias.brf 'branch -f'
 
@@ -47,28 +46,22 @@ source "$FUNCTIONS"
 # git:
 #   Overrides the git command.
 function git () {
-    # -- basics
     if [ "$1" = "root" ]; then
         root
     elif [ "$1" = "diff" ]; then
         diff
     elif  [ "$1" = "pull" ]; then
         pull
+    elif  [ "$1" = "brm" ]; then
+        brm "$@"
     elif [ "$1" = "clone" ]; then
         clone "$@"
-
-    # -- submodule operations
     elif  [ "$1" = "subrm" ]; then
         subrm "$@"
     elif  [ "$1" = "sublst" ]; then
         sublst
-
-    # -- attaching detached head
-    #    with unintended commits
     elif  [ "$1" = "attach" ]; then
         attach "$@"
-
-    # -- OTRW revert to normal git command
     else
         command git "$@"
     fi
