@@ -6,20 +6,41 @@
 # created: 2020-11-04 08:50
 # Github: https://github.com/antiqueeverett/
 
+
+# bmv [ beta dev ]
+#    Renames a local and remote branch.
+#    Caveat:
+#      This operation should be carried out outside the
+#      branch of interest, i.e., from a different branch
+function brm() {
+    shift
+    local newname=$1
+    local oldname=$2
+
+    echo $newname $oldname
+
+    git branch -m $oldname $newname
+    git push origin:$oldname $newname
+    git push origin -u $newname
+}
+
+
 # mv
 #   Enforces moving svn files correctly; that is,
 #   uses [ git mv ] command iff [ mv ] command is
 #   accidentally used within a git repository.
 function mv() {
-    # syntax notes:
-    #   -- $(command) produces a single variable to be passed as an argument
-    #   -- if ( .... ) wraps conditional in a sub shell to redirect output
+    # verify we are in a git repo
     if ( [ $(git rev-parse --git-dir) ] && [ $(git ls-files "$@") ] ) > /dev/null 2>&1 ; then
         git mv "$@"
     else
         command mv "$@"
     fi
 }
+# syntax notes:
+#  - $(command) produces a single variable to be passed as an argument
+#  - if ( .... ) wraps conditional in a sub shell to redirect output
+
 
 # attach
 #  Attaches a detached head to the main branch.
