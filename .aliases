@@ -12,9 +12,8 @@ git config --global alias.cobr 'checkout -b'
 
 # -- status and logs
 git config --global alias.s 'status'
-git config --global alias.lg 'log'
-git config --global alias.lgr 'reflog'
-git config --global alias.lgp 'log --pretty="format:%h %G? %aN  %s"'
+git config --global alias.ls 'ls-tree --full-tree -r --name-only HEAD'
+git config --global alias.pretty-log 'log --pretty="format:%h %G? %aN  %s"'
 
 # -- submodule operations
 git config --global alias.subadd 'submodule add'
@@ -54,6 +53,8 @@ function git () {
         pull
     elif  [ "$1" = "brm" ]; then
         brm "$@"
+    elif  [ "$1" = "brmk" ]; then
+        brmk "$@"
     elif [ "$1" = "clone" ]; then
         clone "$@"
     elif  [ "$1" = "subrm" ]; then
