@@ -6,8 +6,20 @@
 # created: 2020-11-04 08:50
 # Github: https://github.com/antiqueeverett/
 
+# brmk [ beta dev ]
+#   Creates a new branch (local-remote).
+function brmk() {
+    shift
+    local remote=$1
+    local branchname=$2
 
-# bmv [ beta dev ]
+    git checkout -b $branchname
+    git push $remote $branchname
+    git push $remote $branchname
+    git push origin -u $branchname
+}
+
+# brm [ beta dev ]
 #    Renames a local and remote branch.
 #    Caveat:
 #      This operation should be carried out outside the
