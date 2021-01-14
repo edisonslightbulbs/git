@@ -12,7 +12,6 @@ function brmk() {
     shift
     local remote=$1
     local branchname=$2
-
     git checkout -b $branchname
     git push $remote $branchname
     git push $remote $branchname
@@ -28,9 +27,6 @@ function brm() {
     shift
     local newname=$1
     local oldname=$2
-
-    echo $newname $oldname
-
     git branch -m $oldname $newname
     git push origin:$oldname $newname
     git push origin -u $newname
