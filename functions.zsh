@@ -116,6 +116,7 @@ function pull() {
             # pull in all submodule changes
             command git pull --recurse-submodules -j 8
             git submodule update --init --recursive -j 8
+            git submodule update --remote --rebase -j 8
         fi
     else
         command git pull -j 8
