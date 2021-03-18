@@ -134,11 +134,10 @@ function root() {
     fi
 }
 
-# subco
-#   Checks out all submodules.
+#  pseudo-ternary
 function subco() {
-    git submodule foreach --recursive git checkout main || git checkout master -j 10
-    git submodule foreach --recursive command git pull  -j 10
+    git submodule foreach --recursive 'git checkout `git rev-parse --abbrev-ref HEAD`'
+    git submodule foreach --recursive 'git pull'
 }
 
 # subrm
