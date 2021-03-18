@@ -114,9 +114,8 @@ function pull() {
     if test -f '.gitmodules'; then
         if grep -w -q 'submodule' '.gitmodules'; then
             # pull in all submodule changes
-            command git pull --recurse-submodules -j 8
-            git submodule update --init --recursive -j 8
-            git submodule update --remote --rebase -j 8
+            git submodule update --init --recursive -j 10
+            git submodule update --recursive --remote -j 10
         fi
     else
         command git pull -j 8
@@ -135,7 +134,14 @@ function root() {
     fi
 }
 
-# sr
+# subco
+#   Checks out all submodules.
+function subco() {
+    git submodule foreach --recursive git checkout main || git checkout master -j 10
+    git submodule foreach --recursive command git pull  -j 10
+}
+
+# subrm
 #   Removes a submodule the right way.
 function subrm() {
     shift

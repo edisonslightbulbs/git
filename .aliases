@@ -57,6 +57,8 @@ function git () {
         brmk "$@"
     elif [ "$1" = "clone" ]; then
         clone "$@"
+    elif  [ "$1" = "subco" ]; then
+        subco
     elif  [ "$1" = "subrm" ]; then
         subrm "$@"
     elif  [ "$1" = "sublst" ]; then
