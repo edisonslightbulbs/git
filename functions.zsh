@@ -114,8 +114,8 @@ function pull() {
     if test -f '.gitmodules'; then
         if grep -w -q 'submodule' '.gitmodules'; then
             # pull in all submodule changes
-            git submodule update --init --recursive -j 10
-            git submodule update --recursive --remote -j 10
+            command git pull --recurse-submodules -j 8
+            git submodule update --init --recursive --remote --rebase -j 8
         fi
     else
         command git pull -j 8
@@ -136,8 +136,10 @@ function root() {
 
 #  pseudo-ternary
 function subco() {
-    git submodule foreach --recursive 'git checkout `git rev-parse --abbrev-ref HEAD`'
-    git submodule foreach --recursive 'git pull'
+    git submodule foreach --recursive '
+    echo `git rev-parse --abbrev-ref HEAD`;
+    git checkout `git rev-parse --abbrev-ref HEAD`'
+    git submodule foreach --recursive 'git pull origin `git rev-parse --abbrev-ref HEAD`'
 }
 
 # subrm
