@@ -8,24 +8,11 @@
 
 # -- checkout
 git config --global alias.co 'checkout'
-git config --global alias.cobr 'checkout -b'
 
 # -- status and logs
 git config --global alias.s 'status'
 git config --global alias.ls 'ls-tree --full-tree -r --name-only HEAD'
-git config --global alias.pretty-log 'log --pretty="format:%h %G? %aN  %s"'
-
-# -- submodule operations
-git config --global alias.subadd 'submodule add'
-
-# -- branch operations
-git config --global alias.br 'branch'
-git config --global alias.brd 'branch -d'
-git config --global alias.brf 'branch -f'
-
-# -- rebase operations
-git config --global alias.rb 'rebase'
-git config --global alias.rbi 'rebase -i'
+git config --global alias.pretty-log 'log --pretty="format:%h %G? %aN  %s"' # ???
 
 # -- reset
 git config --global alias.rst 'restore'
@@ -37,36 +24,51 @@ git config --global alias.track 'ls-tree -r master --name-only'
 # -- patch
 git config --global alias.patch 'add --patch'
 
-
-# -- alias git funntions
-FUNCTIONS="$HOME/dotfiles/git/functions.zsh"
-source "$FUNCTIONS"
-
-# git:
-#   Overrides the git command.
+# Custom aliases;
+#   overriding default git commands
+#   to extend  functionality
 function git () {
     if [ "$1" = "root" ]; then
         root
-    elif [ "$1" = "diff" ]; then
-        diff
     elif  [ "$1" = "pull" ]; then
         pull
-    elif  [ "$1" = "brm" ]; then
-        brm "$@"
-    elif  [ "$1" = "brmk" ]; then
-        brmk "$@"
     elif [ "$1" = "clone" ]; then
         clone "$@"
-    elif  [ "$1" = "subco" ]; then
-        subco
-    elif  [ "$1" = "subrm" ]; then
-        subrm "$@"
-    elif  [ "$1" = "sublst" ]; then
-        sublst
     elif  [ "$1" = "attach" ]; then
         attach "$@"
+    elif  [ "$1" = "sub" ]; then
+        shift
+        sub "$@"
+    elif  [ "$1" = "br" ]; then
+        shift
+        br "$@"
     else
         command git "$@"
+    fi
+}
+
+function sub () {
+    if  [ "$1" = "update" ]; then
+        subupdate
+    elif  [ "$1" = "rm" ]; then
+        subrm "$@"
+    elif  [ "$1" = "add" ]; then
+        shift
+        subadd "$@"
+    elif  [ "$1" = "commit" ]; then
+        subcommit
+    elif  [ "$1" = "push" ]; then
+        subpush
+    elif  [ "$1" = "ls" ]; then
+        sublst
+    fi
+}
+
+function br () {
+    if  [ "$1" = "mv" ]; then
+        brm "$@"
+    elif  [ "$1" = "touch" ]; then
+        brmk "$@"
     fi
 }
 
