@@ -23,12 +23,13 @@ function pull() {
     # iff repo has submodules ...
     if test -f '.gitmodules'; then
         if grep -w -q 'submodule' '.gitmodules'; then
+
             # pull in all submodule changes
-            command git pull --recurse-submodules -j8
-            git submodule update --init --recursive -j8
+            command git pull --recurse-submodules
+            command git submodule update --init --recursive
         fi
     else
-        command git pull -j 8
+        command git pull
     fi
     cd "$CURR_DIR" || return # retain working directory
 }
