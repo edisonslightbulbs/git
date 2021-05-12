@@ -46,6 +46,7 @@ function subcommit () {
         git difftool
     fi
     '
+    subpush
 }
 
 function subpush () {
@@ -66,15 +67,15 @@ function sublst() {
 }
 
 
-function subupdate() {
+function subpull() {
     git submodule foreach --recursive '
     if git config --get remote.origin.url | grep 'edisonslightbulbs'; then
         git checkout main || git checkout master ||  true
-        git pull origin main || git checkout master || true
+        git pull origin main || git pull origin master || true
     fi
     if git config --get remote.origin.url | grep 'antiqueeverett'; then
         git checkout main || git checkout master ||  true
-        git pull origin main || git checkout master || true
+        git pull origin main || git pull origin master || true
     fi
     '
 }
