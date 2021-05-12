@@ -48,8 +48,8 @@ function git () {
 }
 
 function sub () {
-    if  [ "$1" = "update" ]; then
-        subupdate
+    if  [ "$1" = "pull" ]; then
+        subpull
     elif  [ "$1" = "rm" ]; then
         subrm "$@"
     elif  [ "$1" = "add" ]; then
