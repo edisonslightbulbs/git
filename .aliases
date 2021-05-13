@@ -30,8 +30,6 @@ git config --global alias.patch 'add --patch'
 function git () {
     if [ "$1" = "root" ]; then
         root
-    elif  [ "$1" = "pull" ]; then
-        pull
     elif [ "$1" = "clone" ]; then
         clone "$@"
     elif  [ "$1" = "attach" ]; then
