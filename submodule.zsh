@@ -15,24 +15,6 @@ function clone() {
 }
 
 
-# pull
-#   For a repo with submodules, auto-recursive pull
-#   https://www.vogella.com/tutorials/GitSubmodules/article.html
-function pull() {
-
-    # iff repo has submodules ...
-    if test -f '.gitmodules'; then
-        if grep -w -q 'submodule' '.gitmodules'; then
-
-            # pull in all submodule changes
-            command git pull --recurse-submodules -j 8
-            git submodule update --init --recursive -j 8
-        fi
-    else
-        command git pull
-    fi
-}
-
 function subadd () {
     command git submodule add "$@"
 }
