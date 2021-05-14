@@ -59,6 +59,8 @@ function sub () {
         subpush
     elif  [ "$1" = "ls" ]; then
         sublst
+    elif  [ "$1" = "status" ]; then
+        substat
     fi
 }
 

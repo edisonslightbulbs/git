@@ -22,10 +22,10 @@ function subadd () {
 function subcommit () {
     git submodule foreach --recursive '
     if git config --get remote.origin.url | grep 'edisonslightbulbs'; then
-        git difftool
+        git difftool || true
     fi
     if git config --get remote.origin.url | grep 'antiqueeverett'; then
-        git difftool
+        git difftool || true
     fi
     '
     subpush
@@ -34,10 +34,10 @@ function subcommit () {
 function subpush () {
     git submodule foreach --recursive '
     if git config --get remote.origin.url | grep 'edisonslightbulbs'; then
-        git push
+        git push || true
     fi
     if git config --get remote.origin.url | grep 'antiqueeverett'; then
-        git push
+        git push || true
     fi
     '
 }
@@ -58,6 +58,17 @@ function subpull() {
     if git config --get remote.origin.url | grep 'antiqueeverett'; then
         git checkout main || git checkout master ||  true
         git pull origin main || git pull origin master || true
+    fi
+    '
+}
+
+function substat() {
+    git submodule foreach --recursive '
+    if git config --get remote.origin.url | grep 'edisonslightbulbs'; then
+        git status
+    fi
+    if git config --get remote.origin.url | grep 'antiqueeverett'; then
+        git status
     fi
     '
 }
