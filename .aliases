@@ -49,6 +49,7 @@ function sub () {
     if  [ "$1" = "pull" ]; then
         subpull
     elif  [ "$1" = "rm" ]; then
+        shift
         subrm "$@"
     elif  [ "$1" = "add" ]; then
         shift
